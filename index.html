@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fast CAT Points Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        label, input, select {
+            display: block;
+            margin: 10px 0;
+        }
+        button {
+            margin: 20px 0;
+        }
+        .result {
+            margin: 20px 0;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fast CAT Points Calculator</h1>
+        <label for="time">Enter Time (seconds):</label>
+        <input type="number" id="time" step="0.01" required>
+
+        <label for="mph">Calculated Speed (MPH):</label>
+        <input type="text" id="mph" readonly>
+
+        <label for="height">Select Dog's Height at Withers:</label>
+        <select id="height" required>
+            <option value="1.0">18" or greater</option>
+            <option value="1.5">12" up to less than 18"</option>
+            <option value="2.0">Below 12"</option>
+        </select>
+
+        <button onclick="calculatePoints()">Calculate Points</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('time').addEventListener('input', calculateMPH);
+
+        function calculateMPH() {
+            const time = document.getElementById('time').value;
+            if (time && time > 0) {
+                const mph = 204.545 / time;
+                document.getElementById('mph').value = mph.toFixed(2);
+            } else {
+                document.getElementById('mph').value = '';
+            }
+        }
+
+        function calculatePoints() {
+            // Get the time, MPH, and height values
+            const time = document.getElementById('time').value;
+            const mph = document.getElementById('mph').value;
+            const height = document.getElementById('height').value;
+
+            // Validate the input
+            if (!time || time <= 0) {
+                alert('Please enter a valid time.');
+                return;
+            }
+            if (!mph || mph <= 0) {
+                alert('Invalid MPH. Please enter a valid time.');
+                return;
+            }
+
+            // Calculate Points
+            const handicap = parseFloat(height);
+            const points = mph * handicap;
+
+            // Display the result
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `Your dog ran at ${mph} MPH and earned ${points.toFixed(2)} points.`;
+
+            // Display title milestones if applicable
+            let titles = '';
+            if (points >= 1000) {
+                titles += 'Your dog earned the FCAT title!';
+            } else if (points >= 500) {
+                titles += 'Your dog earned the DCAT title!';
+            } else if (points >= 150) {
+                titles += 'Your dog earned the BCAT title!';
+            }
+            if (titles) {
+                resultDiv.innerHTML += `<br>${titles}`;
+            }
+        }
+    </script>
+</body>
+</html>
